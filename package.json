@@ -1,0 +1,14 @@
+{
+  "name": "BAG_GEO_locaties",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "*",
+    "jade": "*",
+    "xml2js": "*",
+    "request": "*"
+  }
+}

@@ -1,3 +1,17 @@
+# =========================
+# Project ignore
+# =========================
+node_modules/
+.settings/
+.project
+
+# =========================
+# Operating System Files
+# =========================
+
+# Windows
+# =========================
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -14,9 +28,6 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
-# =========================
-# Operating System Files
-# =========================
 
 # OSX
 # =========================

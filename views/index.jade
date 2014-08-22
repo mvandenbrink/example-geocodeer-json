@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  div
+    include navbar
+    div#zonewrapper
+      h1= title
+      p Example RestFul JSON API to get geometry information for Dutch addresses.
+      br
+      div#geo-examples.list-group
+        a.list-group-item(href='/v0.1/geocoder?zoekterm=1824HC+34')
+          span Example
+          br
+          /v0.1/geocoder?zoekterm=1824HC+34
+        a.list-group-item(href='/v0.1/geocoder?zoekterm=Utrecht+Neude+1')
+          span Example
+          br
+          /v0.1/geocoder?zoekterm=Utrecht+Neude+1
+        a.list-group-item(href='/v0.1/geocoder?zoekterm=grote+markt+groenningen')
+          span Example
+          br
+          /v0.1/geocoder?zoekterm=grote+markt+groenningen
+        a.list-group-item(href='/v0.1/geocoder?zoekterm=grote+markt+groenningen&strict=true')
+          span Example
+          br
+          /v0.1/geocoder?zoekterm=grote+markt+groenningen&strict=true
+      p
+        br
+      p 
+        | Based on the 
+        a(href='https://www.pdok.nl/nl/service/openls-bag-geocodeerservice', target='_blank') BAG Geocodeerservice 
+        | from 
+        a(href='https://www.pdok.nl/en/node', target='_blank') PDOK 
+        | (Publieke Dienstverlening op de Kaart) 
+         
+    div#messages
+  
+  script(type='text/javascript' src='/javascripts/mobiletouch.js')
+ 
