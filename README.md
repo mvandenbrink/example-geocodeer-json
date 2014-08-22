@@ -1,4 +1,4 @@
-# example-geocodeer-json
+# example-geocoder-json
 
 ## Objective
 
@@ -10,6 +10,8 @@ also give the GPS points based on the WGS84 standard.
 * npm install
 * node app.js
 * http://localhost:3003/
+
+The home page contains some sample API requests. Use the URL http://localhost:3003/v0.1/geocoder?zoekterm=searchtext in your program.
 
 ### Tools
 
