@@ -6,8 +6,12 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "*",
+    "express": "4.*",
     "jade": "*",
+    "serve-favicon": "*",
+    "method-override": "*",
+    "body-parser": "*",
+    "morgan": "*",
     "xml2js": "*",
     "request": "*"
   }

@@ -10,6 +10,8 @@ var stripPrefix = require('xml2js/lib/processors').stripPrefix;
 
 var zoekurl = 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder';
 var my_error;
+var my_status;
+var my_body;
 
 exports.v01 = function(req, res){
   var query = getRequestString(req);
@@ -23,8 +25,8 @@ exports.v01 = function(req, res){
       parseString(body, {tagNameProcessors: [stripPrefix], normalizeTags: true}, function (err, result) {
         if (result.geocoderesponse === undefined || result.geocoderesponse.geocoderesponselist === undefined) {
           console.dir("Result from remote server is : " + JSON.stringify(result));
-          res.statusCode = 404;
-          res.send(JSON.stringify(new errorMessage(2, WARNINGTYPE, "No data found with request '" + query + "'")));
+          my_status = 404;
+          my_body = JSON.stringify(new errorMessage(2, WARNINGTYPE, "No data found with request '" + query + "'"));
         } else {
           try {
             srsName     = result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].point[0].$.srsName;
@@ -39,25 +41,28 @@ exports.v01 = function(req, res){
             console.dir(result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].address[0].place);
             console.dir(result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].address[0].postalcode[0]);
             */
+            my_status=200;
+            my_body = JSON.stringify(geoCoord);
           } catch(err) {
             console.dir(result.geocoderesponse);
             console.log("Catch error while creating geoCoord object on XML2JS response: " + err);
-            res.statusCode = 500;
-            res.send(JSON.stringify(new errorMessage(3, ERRORTYPE, "Wrong response from GEO server")));
+            my_status = 500;
+            my_body = JSON.stringify(new errorMessage(3, ERRORTYPE, "Wrong response from GEO server"));
           }
         }
       });
-      res.statusCode = response.statusCode;
-      res.send(JSON.stringify(geoCoord));
     } else {
       console.log("Request to '" + zoekurl + "' failed. " + error);
       if (response !== undefined && response.statusCode !== undefined) {
         console.log("HTTP status from remote server: HTTP " + response.statusCode);
         console.dir(response.body);
       }
-      res.statusCode = 500;
-      res.send(JSON.stringify(new errorMessage(1, ERRORTYPE, "Request error failed on server. Try again later.")));
+      my_status = 500;
+      my_body = JSON.stringify(new errorMessage(1, ERRORTYPE, "Request error failed on server. Try again later."));
     }
+    
+    res.status(my_status).send(my_body);
+
   }); 
   
   console.log('request ended');  
@@ -124,12 +129,12 @@ function geoData(RD, srsName, GPS) {
       'x_coordinate': Number(RD[0]),
       'y_coordinate': Number(RD[1]),
       'z_coordinate': 0,
-      'srsname' : srsName
+      'srsname'     : srsName
     },
     'gps': {
-      'latitude': GPS[0],
+      'latitude' : GPS[0],
       'longitude': GPS[1],
-      'name': 'WGS84'
+      'name'     : 'WGS84'
     }
   };
 }
