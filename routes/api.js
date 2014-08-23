@@ -3,10 +3,10 @@
  * 
  * 
  */
-var url = require('url');
-var request = require('request');
-var parseString = require('xml2js').parseString;
-var stripPrefix = require('xml2js/lib/processors').stripPrefix;
+var url         = require('url')
+  , request     = require('request')
+  , parseString = require('xml2js').parseString
+  , stripPrefix = require('xml2js/lib/processors').stripPrefix;
 
 var zoekurl = 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder';
 var my_error;
@@ -24,41 +24,41 @@ exports.v01 = function(req, res){
     if (!error && response.statusCode == 200) {
       parseString(body, {tagNameProcessors: [stripPrefix], normalizeTags: true}, function (err, result) {
         if (result.geocoderesponse === undefined || result.geocoderesponse.geocoderesponselist === undefined) {
-          console.dir("Result from remote server is : " + JSON.stringify(result));
+          console.log("Result from remote server is : " + JSON.stringify(result));
           my_status = 404;
-          my_body = JSON.stringify(new errorMessage(2, WARNINGTYPE, "No data found with request '" + query + "'"));
+          my_body   = JSON.stringify(new errorMessage(2, WARNINGTYPE, "No data found with request '" + query + "'"));
         } else {
           try {
             srsName     = result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].point[0].$.srsName;
             geoRDCoord  = result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].point[0].pos[0]._.split(' ');
             geoGPSCoord = RD2GPS(geoRDCoord[0], geoRDCoord[1]);
             geoCoord    = new geoData(geoRDCoord, srsName, geoGPSCoord);
+            /*
             console.dir(geoRDCoord);
             console.dir(geoCoord);
-            /*
             console.dir(result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].address[0].streetaddress[0].building[0].$.number);
             console.dir(result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].address[0].streetaddress[0].street[0]);
             console.dir(result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].address[0].place);
             console.dir(result.geocoderesponse.geocoderesponselist[0].geocodedaddress[0].address[0].postalcode[0]);
             */
-            my_status=200;
-            my_body = JSON.stringify(geoCoord);
-          } catch(err) {
+            my_status =200;
+            my_body   = JSON.stringify(geoCoord);
+          } catch(error) {
             console.dir(result.geocoderesponse);
-            console.log("Catch error while creating geoCoord object on XML2JS response: " + err);
+            console.error("Catch error while creating geoCoord object on XML2JS response: " + error);
             my_status = 500;
-            my_body = JSON.stringify(new errorMessage(3, ERRORTYPE, "Wrong response from GEO server"));
+            my_body   = JSON.stringify(new errorMessage(3, ERRORTYPE, "Wrong response from GEO server"));
           }
         }
       });
     } else {
-      console.log("Request to '" + zoekurl + "' failed. " + error);
+      console.error("Request to '" + zoekurl + "' failed. " + error);
       if (response !== undefined && response.statusCode !== undefined) {
-        console.log("HTTP status from remote server: HTTP " + response.statusCode);
+        console.error("HTTP status from remote server: HTTP " + response.statusCode);
         console.dir(response.body);
       }
       my_status = 500;
-      my_body = JSON.stringify(new errorMessage(1, ERRORTYPE, "Request error failed on server. Try again later."));
+      my_body   = JSON.stringify(new errorMessage(1, ERRORTYPE, "Request error failed on server. Try again later."));
     }
     
     res.status(my_status).send(my_body);
@@ -70,7 +70,7 @@ exports.v01 = function(req, res){
 
 function getRequestString(req) {
   var url_parts = url.parse(req.url, true);
-  console.log(url_parts.search);
+  // console.log(url_parts.search);
   
   return url_parts.search;
 }
